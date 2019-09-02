@@ -62,12 +62,15 @@ SecurityGard::SecurityGard()
 
 bool SecurityGard::checkModule(const std::wstring& filePath, NppModule module2check)
 {
+	/*
 	if (_securityMode == sm_certif)
 		return verifySignedLibrary(filePath, module2check);
 	else if (_securityMode == sm_sha256)
 		return checkSha256(filePath, module2check);
 	else
 		return false;
+	*/
+	return true;
 }
 
 bool SecurityGard::checkSha256(const std::wstring& filePath, NppModule module2check)

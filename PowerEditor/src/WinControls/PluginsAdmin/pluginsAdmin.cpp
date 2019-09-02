@@ -700,11 +700,11 @@ typedef const char * (__cdecl * PFUNCGETPLUGINLIST)();
 bool PluginsAdminDlg::isValide()
 {
 	// GUP.exe doesn't work under XP
-	winVer winVersion = (NppParameters::getInstance())->getWinVersion();
+	/*winVer winVersion = (NppParameters::getInstance())->getWinVersion();
 	if (winVersion <= WV_XP)
 	{
 		return false;
-	}
+	}*/
 
 	if (!::PathFileExists(_pluginListFullPath.c_str()))
 	{
@@ -754,7 +754,7 @@ bool PluginsAdminDlg::updateListAndLoadFromJson()
 
 #else //RELEASE
 
-		hLib = ::LoadLibraryEx(_pluginListFullPath.c_str(), 0, LOAD_LIBRARY_AS_DATAFILE_EXCLUSIVE);
+		hLib = ::LoadLibraryEx(_pluginListFullPath.c_str(), 0, LOAD_LIBRARY_AS_DATAFILE);
 
 		if (!hLib)
 		{
