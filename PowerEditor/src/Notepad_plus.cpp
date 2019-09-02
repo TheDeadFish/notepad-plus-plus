@@ -2589,6 +2589,7 @@ void Notepad_plus::maintainIndentation(TCHAR ch)
 		(eolMode == SC_EOL_CR && ch == '\r')) && prevLine >= 0 && _pEditView->getLineLength(prevLine) == 0)
 		return;
 
+#if 0 // df-mod: disable smart tabs
 	if (type == L_C || type == L_CPP || type == L_JAVA || type == L_CS || type == L_OBJC ||
 		type == L_PHP || type == L_JS || type == L_JAVASCRIPT || type == L_JSP || type == L_CSS)
 	{
@@ -2719,6 +2720,7 @@ void Notepad_plus::maintainIndentation(TCHAR ch)
 		}
 	}
 	else // Basic indentation mode
+#endif
 	{
 		if (((eolMode == SC_EOL_CRLF || eolMode == SC_EOL_LF) && ch == '\n') ||
 			(eolMode == SC_EOL_CR && ch == '\r'))
