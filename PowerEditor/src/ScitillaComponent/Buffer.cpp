@@ -95,6 +95,8 @@ Buffer::Buffer(FileManager * pManager, BufferID id, Document doc, DocFileStatus 
 	_isDirty   = false;
 	_canNotify = true;
 	_needLexer = false; // new buffers do not need lexing, Scintilla takes care of that
+
+	_indentStyle.data = 0;
 }
 
 

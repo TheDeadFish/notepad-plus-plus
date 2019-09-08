@@ -435,6 +435,7 @@
 	#define NPPM_INTERNAL_PRNTANDQUIT               (NOTEPADPLUS_USER_INTERNAL + 47)
 	#define NPPM_INTERNAL_SAVEBACKUP        		(NOTEPADPLUS_USER_INTERNAL + 48)
 	#define NPPM_INTERNAL_STOPMONITORING            (NOTEPADPLUS_USER_INTERNAL + 49) // Used by Monitoring feature
+	#define NPPM_INTERNAL_SETINDENTSTYLE            (NOTEPADPLUS_USER_INTERNAL + 50)
 
     //wParam: 0
     //lParam: document new index

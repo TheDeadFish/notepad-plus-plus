@@ -3321,6 +3321,39 @@ void ScintillaEditView::runMarkers(bool doHide, size_t searchStart, bool endOfDo
 	}
 }
 
+void ScintillaEditView::updateIndentStyle()
+{
+	execute(SCI_SETBACKSPACEUNINDENTS, 1);
+	Buffer* buf = getCurrentBuffer();
+	if (!buf) return;
+	IndentStyle style = buf->getIndentStyle();
+	if (!style.tabWidth) return;
+	execute(SCI_SETTABWIDTH, style.tabWidth);
+	execute(SCI_SETINDENT, style.indentWidth);
+	execute(SCI_SETUSETABS, style.useTabs);
+}
+
+
+void ScintillaEditView::setIndentStyle(IndentStyle style)
+{
+	if (!style.tabWidth) return;
+	Buffer* buf = getCurrentBuffer();
+	if (!buf) return;
+	buf->setIndentStyle(style);
+	updateIndentStyle();
+}
+
+IndentStyle ScintillaEditView::getIndentStyle()
+{
+	IndentStyle style;
+	style.tabWidth = execute(SCI_GETTABWIDTH);
+	style.indentWidth = execute(SCI_GETINDENT);
+	style.useTabs = execute(SCI_GETUSETABS);
+	if (style.indentWidth == 0)
+		style.indentWidth = style.tabWidth;
+
+	return style;
+}
 
 void ScintillaEditView::setTabSettings(Lang *lang)
 {
@@ -3331,10 +3364,12 @@ void ScintillaEditView::setTabSettings(Lang *lang)
 			Lang *ljs = _pParameter->getLangFromID(L_JS);
 			execute(SCI_SETTABWIDTH, ljs->_tabSize > 0 ? ljs->_tabSize : lang->_tabSize);
 			execute(SCI_SETUSETABS, !ljs->_isTabReplacedBySpace);
-			return;
 		}
-        execute(SCI_SETTABWIDTH, lang->_tabSize);
-        execute(SCI_SETUSETABS, !lang->_isTabReplacedBySpace);
+		else
+		{
+			execute(SCI_SETTABWIDTH, lang->_tabSize);
+			execute(SCI_SETUSETABS, !lang->_isTabReplacedBySpace);
+		}
     }
     else
     {
@@ -3342,6 +3377,9 @@ void ScintillaEditView::setTabSettings(Lang *lang)
         execute(SCI_SETTABWIDTH, nppgui._tabSize  > 0 ? nppgui._tabSize : lang->_tabSize);
 		execute(SCI_SETUSETABS, !nppgui._tabReplacedBySpace);
     }
+
+	execute(SCI_SETINDENT, 0);
+	updateIndentStyle();
 }
 
 void ScintillaEditView::insertNewLineAboveCurrentLine()

@@ -71,7 +71,7 @@
     <_ProjectFileVersion>12.0.21005.1</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Debug|Win32'">
-    <OutDir>$(Configuration)\</OutDir>
+    <OutDir>..\bin\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
@@ -99,9 +99,9 @@
       <ExceptionHandling>Async</ExceptionHandling>
       <BasicRuntimeChecks>UninitializedLocalUsageCheck</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <WarningLevel>Level4</WarningLevel>
-      <TreatWarningAsError>true</TreatWarningAsError>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <SmallerTypeCheck>false</SmallerTypeCheck>
       <DisableSpecificWarnings>4091;4456;4457;4459</DisableSpecificWarnings>
@@ -179,7 +179,7 @@
       <ExceptionHandling>Async</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>false</TreatWarningAsError>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
       <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
@@ -353,6 +353,7 @@ copy ..\src\contextMenu.xml ..\bin64\contextMenu.xml
     <ClCompile Include="..\src\ScitillaComponent\ScintillaEditView.cpp" />
     <ClCompile Include="..\src\WinControls\shortcut\shortcut.cpp" />
     <ClCompile Include="..\src\WinControls\Grid\ShortcutMapper.cpp" />
+    <ClCompile Include="..\src\WinControls\ToolBar\IndentBar.cpp" />
     <ClCompile Include="..\src\WinControls\WindowsDlg\SizeableDlg.cpp" />
     <ClCompile Include="..\src\ScitillaComponent\SmartHighlighter.cpp" />
     <ClCompile Include="..\src\WinControls\SplitterContainer\Splitter.cpp" />
@@ -632,6 +633,7 @@ copy ..\src\contextMenu.xml ..\bin64\contextMenu.xml
     <ClInclude Include="..\src\WinControls\shortcut\shortcut.h" />
     <ClInclude Include="..\src\WinControls\Grid\ShortcutMapper.h" />
     <ClInclude Include="..\src\WinControls\Grid\ShortcutMapper_rc.h" />
+    <ClInclude Include="..\src\WinControls\ToolBar\IndentBar.h" />
     <ClInclude Include="..\src\WinControls\WindowsDlg\SizeableDlg.h" />
     <ClInclude Include="..\src\ScitillaComponent\SmartHighlighter.h" />
     <ClInclude Include="..\src\WinControls\SplitterContainer\Splitter.h" />

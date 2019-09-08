@@ -631,6 +631,10 @@ public:
 
 	void setHotspotStyle(Style& styleToSet);
     void setTabSettings(Lang *lang);
+	void setIndentStyle(IndentStyle style);
+	IndentStyle getIndentStyle();
+
+
 	bool isWrapRestoreNeeded() const {return _wrapRestoreNeeded;};
 	void setWrapRestoreNeeded(bool isWrapRestoredNeeded) {_wrapRestoreNeeded = isWrapRestoredNeeded;};
 
@@ -1031,5 +1035,7 @@ protected:
 	std::pair<int, int> getWordRange();
 	bool expandWordSelection();
 	void getFoldColor(COLORREF& fgColor, COLORREF& bgColor, COLORREF& activeFgColor);
+
+	void updateIndentStyle();
 };
 

@@ -204,6 +204,8 @@ LRESULT Notepad_plus::init(HWND hwnd)
 	NppParameters *pNppParam = NppParameters::getInstance();
 	NppGUI & nppGUI = const_cast<NppGUI &>(pNppParam->getNppGUI());
 
+	identBar_create(_pPublicInterface->getHinst(), hwnd);
+
 	// Menu
 	_mainMenuHandle = ::GetMenu(hwnd);
 	int langPos2BeRemoved = MENUINDEX_LANGUAGE+1;
@@ -606,6 +608,7 @@ LRESULT Notepad_plus::init(HWND hwnd)
 	_rebarTop.init(_pPublicInterface->getHinst(), hwnd);
 	_rebarBottom.init(_pPublicInterface->getHinst(), hwnd);
 	_toolBar.addToRebar(&_rebarTop);
+	identBar_addToRebar(&_rebarTop);
 	_rebarTop.setIDVisible(REBAR_BAR_TOOLBAR, willBeShown);
 
 	checkMacroState();
@@ -5273,6 +5276,8 @@ void Notepad_plus::notifyBufferChanged(Buffer * buffer, int mask)
 		setDisplayFormat(buffer->getEolFormat());
 		enableConvertMenuItems(buffer->getEolFormat());
 	}
+
+	identBar_setStyle(_pEditView->getIndentStyle());
 }
 
 void Notepad_plus::notifyBufferActivated(BufferID bufid, int view)

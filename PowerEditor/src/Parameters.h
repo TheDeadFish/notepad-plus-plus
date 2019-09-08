@@ -32,6 +32,7 @@
 #include "Scintilla.h"
 #include "ScintillaRef.h"
 #include "ToolBar.h"
+#include "IndentBar.h"
 #include "UserDefineLangReference.h"
 #include "colors.h"
 #include "shortcut.h"

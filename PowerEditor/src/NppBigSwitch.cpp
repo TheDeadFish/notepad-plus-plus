@@ -2339,6 +2339,13 @@ LRESULT Notepad_plus::process(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPa
 			break;
 		}
 
+		case NPPM_INTERNAL_SETINDENTSTYLE:
+		{
+			IndentStyle style; style.data = wParam;
+			_pEditView->setIndentStyle(style);
+			break;
+		}
+
 		case WM_INITMENUPOPUP:
 		{
 			_windowsMenu.initPopupMenu(reinterpret_cast<HMENU>(wParam), _pDocTab);

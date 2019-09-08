@@ -36,6 +36,7 @@
 
 #define REBAR_BAR_TOOLBAR		0
 #define REBAR_BAR_SEARCH		1
+#define REBAR_BAR_INDENT		2
 
 #define REBAR_BAR_EXTERNAL		10
 #ifndef _WIN32_IE

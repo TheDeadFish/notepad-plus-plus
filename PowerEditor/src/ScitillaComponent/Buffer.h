@@ -219,6 +219,16 @@ public:
 
 	void setLangType(LangType lang, const TCHAR * userLangName = TEXT(""));
 
+
+	IndentStyle getIndentStyle() const {
+		return _indentStyle;
+	}
+
+	void setIndentStyle(IndentStyle style) {
+		_indentStyle = style;
+
+	}
+
 	UniMode getUnicodeMode() const {
 		return _unicodeMode;
 	}
@@ -385,6 +395,7 @@ private:
 	//document properties
 	Document _doc;	//invariable
 	LangType _lang;
+	IndentStyle _indentStyle;
 	generic_string _userLangExt; // it's useful if only (_lang == L_USER)
 	bool _isDirty = false;
 	EolType _eolFormat = EolType::osdefault;
