@@ -28,6 +28,7 @@
 #include <mutex>
 
 #include "Utf8_16.h"
+#include "indentDetect.h"
 
 
 
@@ -119,6 +120,7 @@ private:
 		LangType _language;
 		int _encoding;
 		EolType _eolFormat;
+		IndentDetect _indent;
 	};
 	~FileManager();
 	int detectCodepage(char* buf, size_t len);
@@ -371,6 +373,8 @@ public:
 	MapPosition getMapPosition() const { return _mapPosition; };
 
 	void langHasBeenSetFromMenu() { _hasLangBeenSetFromMenu = true; };
+	
+	IndentDetect _indentDetect;
 
 private:
 	int indexOfReference(const ScintillaEditView * identifier) const;

@@ -37,6 +37,7 @@
 #include "EncodingMapper.h"
 #include "uchardet.h"
 #include "LongRunningOperation.h"
+#include "indentDetect.h"
 
 FileManager * FileManager::_pSelf = new FileManager();
 
@@ -45,31 +46,6 @@ static const int CR = 0x0D;
 static const int LF = 0x0A;
 
 long Buffer::_recentTagCtr = 0;
-
-namespace // anonymous
-{
-	static EolType getEOLFormatForm(const char* const data, size_t length, EolType defvalue = EolType::osdefault)
-	{
-		assert(length == 0 or data != nullptr && "invalid buffer for getEOLFormatForm()");
-
-		for (size_t i = 0; i != length; ++i)
-		{
-			if (data[i] == CR)
-			{
-				if (i + 1 < length && data[i + 1] == LF)
-					return EolType::windows;
-
-				return EolType::macos;
-			}
-
-			if (data[i] == LF)
-				return EolType::unix;
-		}
-
-		return defvalue; // fallback unknown
-	}
-
-} // anonymous namespace
 
 
 Buffer::Buffer(FileManager * pManager, BufferID id, Document doc, DocFileStatus type, const TCHAR *fileName)
@@ -586,7 +562,6 @@ void FileManager::closeBuffer(BufferID id, ScintillaEditView * identifier)
 	}
 }
 
-
 // backupFileName is sentinel of backup mode: if it's not NULL, then we use it (load it). Otherwise we use filename
 BufferID FileManager::loadFile(const TCHAR * filename, Document doc, int encoding, const TCHAR *backupFileName, FILETIME fileNameTimestamp)
 {
@@ -618,6 +593,7 @@ BufferID FileManager::loadFile(const TCHAR * filename, Document doc, int encodin
 	loadedFileFormat._encoding = encoding;
 	loadedFileFormat._eolFormat = EolType::unknown;
 	loadedFileFormat._language = L_TEXT;
+	loadedFileFormat._indent.init(NULL);
 
 	bool res = loadFileData(doc, backupFileName ? backupFileName : fullpath, data, &UnicodeConvertor, loadedFileFormat);
 	if (res)
@@ -625,6 +601,7 @@ BufferID FileManager::loadFile(const TCHAR * filename, Document doc, int encodin
 		Buffer* newBuf = new Buffer(this, _nextBufferID, doc, DOC_REGULAR, fullpath);
 		BufferID id = static_cast<BufferID>(newBuf);
 		newBuf->_id = id;
+		newBuf->_indentDetect.move(&loadedFileFormat._indent);
 
 		if (backupFileName != NULL)
 		{
@@ -652,6 +629,7 @@ BufferID FileManager::loadFile(const TCHAR * filename, Document doc, int encodin
 
 		//determine buffer properties
 		++_nextBufferID;
+
 		return id;
 	}
 	else //failed loading, release document
@@ -675,6 +653,7 @@ bool FileManager::reloadBuffer(BufferID id)
 	loadedFileFormat._encoding = buf->getEncoding();
 	loadedFileFormat._eolFormat = EolType::unknown;
 	loadedFileFormat._language = buf->getLangType();
+	loadedFileFormat._indent.init(&buf->_indentDetect);
 
 	buf->setLoadedDirty(false);	// Since the buffer will be reloaded from the disk, and it will be clean (not dirty), we can set _isLoadedDirty false safetly.
 								// Set _isLoadedDirty false before calling "_pscratchTilla->execute(SCI_CLEARALL);" in loadFileData() to avoid setDirty in SCN_SAVEPOINTREACHED / SCN_SAVEPOINTLEFT
@@ -684,6 +663,7 @@ bool FileManager::reloadBuffer(BufferID id)
 
 	if (res)
 	{
+		buf->_indentDetect.move(&loadedFileFormat._indent);
 		setLoadedBufferEncodingAndEol(buf, UnicodeConvertor, loadedFileFormat._encoding, loadedFileFormat._eolFormat);
 	}
 	return res;
@@ -711,8 +691,9 @@ void FileManager::setLoadedBufferEncodingAndEol(Buffer* buf, const Utf8_16_Read&
 	}
 
 	// Since the buffer will be reloaded from the disk, EOL might have been changed
-	if (bkformat != EolType::unknown)
-		buf->setEolFormat(bkformat);
+	bkformat = buf->getEolFormat();
+	buf->_indentDetect.eol(bkformat);
+	buf->setEolFormat(bkformat);
 }
 
 
@@ -1378,16 +1359,16 @@ bool FileManager::loadFileData(Document doc, const TCHAR * filename, char* data,
 					const char *newData = wmc->encode(fileFormat._encoding, SC_CP_UTF8, data, static_cast<int32_t>(lenFile), &newDataLen, &incompleteMultibyteChar);
 					_pscratchTilla->execute(SCI_APPENDTEXT, newDataLen, reinterpret_cast<LPARAM>(newData));
 				}
-
-				if (format == EolType::unknown)
-					format = getEOLFormatForm(data, lenFile, EolType::unknown);
+				
+				fileFormat._indent.next(data, lenFile);
 			}
 			else
 			{
 				lenConvert = unicodeConvertor->convert(data, lenFile);
 				_pscratchTilla->execute(SCI_APPENDTEXT, lenConvert, reinterpret_cast<LPARAM>(unicodeConvertor->getNewBuf()));
-				if (format == EolType::unknown)
-					format = getEOLFormatForm(unicodeConvertor->getNewBuf(), unicodeConvertor->getNewSize(), EolType::unknown);
+
+				fileFormat._indent.next(unicodeConvertor->getNewBuf(), 
+					unicodeConvertor->getNewSize());
 			}
 
 			if (_pscratchTilla->execute(SCI_GETSTATUS) != SC_STATUS_OK)

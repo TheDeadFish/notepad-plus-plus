@@ -3327,7 +3327,10 @@ void ScintillaEditView::updateIndentStyle()
 	Buffer* buf = getCurrentBuffer();
 	if (!buf) return;
 	IndentStyle style = buf->getIndentStyle();
-	if (!style.tabWidth) return;
+	if (!style.tabWidth) {
+		style = getIndentStyle();
+		if(!buf->_indentDetect.indent(style)) return;
+	}
 	execute(SCI_SETTABWIDTH, style.tabWidth);
 	execute(SCI_SETINDENT, style.indentWidth);
 	execute(SCI_SETUSETABS, style.useTabs);
